@@ -1,13 +1,28 @@
-import { Button, Panel, DropdownButton, MenuItem, FormControl } from 'react-bootstrap';
+import {Button, Panel, DropdownButton, MenuItem, FormControl, Tooltip, OverlayTrigger} from 'react-bootstrap';
 import createReactClass from 'create-react-class';
+
+
+const TooltipWrapper = ({message, children}) => {
+  return <OverlayTrigger placement={'top'} overlay={<Tooltip>
+    <strong>{message}</strong>
+  </Tooltip>}>
+    {children}
+  </OverlayTrigger>
+}
 
 const ManageAccount = createReactClass({
   getInitialState: function() {
     return {
-      accountTypes: ['type1', 'type2', 'type3'],
+      accountTypes: ['iam_arn', 'basic_auth_user'],
       accountNames: ['name1', 'name2', 'name3'],
       odinMaterialSet: '',
-      posixGroups: ['group1', 'group2', 'group3']
+      posixGroups: ['group1', 'group2', 'group3'],
+      regions: ['USA', 'AUS', 'CHINA'],
+
+      accountType: '',
+      accountName: '',
+      posixGroup: '',
+      region: ''
     };
   },
 
@@ -15,6 +30,36 @@ const ManageAccount = createReactClass({
     this.setState({
       odinMaterialSet: e.target.value
     });
+  },
+
+  handleClickAccountType: function (type) {
+
+    this.setState({
+      accountType: type
+    })
+  },
+
+  handleClickAccountName: function (name) {
+    this.setState({
+      accountName: name
+    })
+  },
+
+  handleClickPosixGroup: function (group) {
+    this.setState({
+      posixGroup: group
+    })
+  },
+
+  handleClickRegion: function (region) {
+    this.setState({
+      region: region
+    })
+  },
+
+  handleSubmit: function (e) {
+    // submit create
+    console.log(this.state)
   },
 
   render: function() {
@@ -31,7 +76,9 @@ const ManageAccount = createReactClass({
               <h5 style={{ fontWeight: 'bold', marginBottom: '0px' }}>
                 Account Type
                 <small>
-                  <Button href={'http://xx.com'} bsStyle={'link'}>Info</Button>
+                  <TooltipWrapper message={'This is info message'}>
+                    <Button href={'http://xx.com'} bsStyle={'link'}>Info</Button>
+                  </TooltipWrapper>
                 </small>
               </h5>
               <p style={{ color: 'grey', marginTop: '0px' }}>
@@ -39,11 +86,17 @@ const ManageAccount = createReactClass({
               </p>
               <DropdownButton
                 bsSize={''}
-                title={"Choose an account type"}
+                title={this.state.accountType || "Choose an account type"}
               >
                 {this.state.accountTypes.map(type => {
                   return (
-                    <MenuItem eventKey={type} key={type}>
+                    <MenuItem
+                      active={this.state.accountType === type}
+                      onClick={() => {
+                        this.handleClickAccountType(type)
+                      }}
+                      eventKey={type}
+                      key={type}>
                       {type}
                     </MenuItem>
                   );
@@ -55,7 +108,9 @@ const ManageAccount = createReactClass({
               <h5 style={{ fontWeight: 'bold', marginBottom: '0px' }}>
                 Account name
                 <small>
-                  <Button href={'http://xx.com'} bsStyle={'link'}>Info</Button>
+                  <TooltipWrapper message={'This is info message'}>
+                    <Button href={'http://xx.com'} bsStyle={'link'}>Info</Button>
+                  </TooltipWrapper>
                 </small>
               </h5>
               <p style={{ color: 'grey', marginTop: '0px' }}>
@@ -63,11 +118,17 @@ const ManageAccount = createReactClass({
               </p>
               <DropdownButton
                 bsSize={''}
-                title={this.state.accountNames[0] || ''}
+                title={this.state.accountName || 'Choose an account name'}
               >
                 {this.state.accountNames.map(name => {
                   return (
-                    <MenuItem eventKey={name} key={name}>
+                    <MenuItem
+                      onClick={() => {
+                        this.handleClickAccountName(name)
+                      }}
+                      active={this.state.accountName === name}
+                      eventKey={name}
+                      key={name}>
                       {name}
                     </MenuItem>
                   );
@@ -75,28 +136,65 @@ const ManageAccount = createReactClass({
               </DropdownButton>
             </div>
 
+            {this.state.accountType === 'basic_auth_user' && (
+              <div>
+                <h5 style={{ fontWeight: 'bold', marginBottom: '0px' }}>
+                  Odin material setinfo
+                  <small>
+                    <TooltipWrapper message={'This is info message'}>
+                      <Button href={'http://xx.com'} bsStyle={'link'}>Info</Button>
+                    </TooltipWrapper>
+                  </small>
+                </h5>
+                <p style={{ color: 'grey', marginTop: '0px' }}>
+                  We use the Odin material set to validate your account credentials at runtime.
+                </p>
+                <FormControl
+                  value={this.state.odinMaterialSet}
+                  onChange={this.handleOdinMaterialSetChange}
+                  type="text"
+                />
+              </div>
+            )}
+
             <div>
               <h5 style={{ fontWeight: 'bold', marginBottom: '0px' }}>
-                Odin material setinfo
+                Region
                 <small>
-                  <Button href={'http://xx.com'} bsStyle={'link'}>Info</Button>
+                  <TooltipWrapper message={'This is info message'}>
+                    <Button href={'http://xx.com'} bsStyle={'link'}>Info</Button>
+                  </TooltipWrapper>
                 </small>
               </h5>
               <p style={{ color: 'grey', marginTop: '0px' }}>
-                We use the Odin material set to validate your account credentials at runtime.
+                this will be the region where you use this account in
               </p>
-              <FormControl
-                value={this.state.odinMaterialSet}
-                onChange={this.handleOdinMaterialSetChange}
-                type="text"
-              />
+              <DropdownButton
+                bsSize={''}
+                title={this.state.region || 'Choose region'}
+              >
+                {this.state.regions.map(region => {
+                  return (
+                    <MenuItem
+                      active={this.state.region === region}
+                      onClick={() => {
+                        this.handleClickRegion(region);
+                      }}
+                      eventKey={region} key={region}>
+                      {region}
+                    </MenuItem>
+                  );
+                })}
+              </DropdownButton>
             </div>
 
             <div>
               <h5 style={{ fontWeight: 'bold', marginBottom: '0px' }}>
                 Posix group
                 <small>
-                  <Button href={'http://xx.com'} bsStyle={'link'}>Info</Button>
+                  <TooltipWrapper message={'This is info message'}>
+                    <Button href={'http://xx.com'} bsStyle={'link'}>Info</Button>
+                  </TooltipWrapper>
                 </small>
               </h5>
               <p style={{ color: 'grey', marginTop: '0px' }}>
@@ -104,16 +202,26 @@ const ManageAccount = createReactClass({
               </p>
               <DropdownButton
                 bsSize={''}
-                title={'Choose and posix group'}
+                title={this.state.posixGroup || 'Choose and posix group'}
               >
                 {this.state.posixGroups.map(group => {
                   return (
-                    <MenuItem eventKey={group} key={group}>
+                    <MenuItem
+                      active={this.state.posixGroup === group}
+                      onClick={() => {
+                        this.handleClickPosixGroup(group);
+                      }}
+                      eventKey={group} key={group}>
                       {group}
                     </MenuItem>
                   );
                 })}
               </DropdownButton>
+            </div>
+            <div style={{marginTop: '30px'}}>
+              <Button
+                onClick={this.handleSubmit}
+                bsStyle="success">Submit</Button>
             </div>
           </Panel.Body>
         </Panel>

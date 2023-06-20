@@ -5,7 +5,7 @@ import createReactClass from 'create-react-class';
 const NavBar = createReactClass({
   render: function() {
     return (
-      <div>
+      <div style={{padding: '10px'}}>
         <h3 style={{marginBottom: '40px'}}>INFAUTO-LEGACY-TEST</h3>
         <Collapse title={'Manage Requests'}>
           <p>

@@ -1,118 +1,124 @@
-import {Checkbox, Table} from "react-bootstrap";
+import {Checkbox, Table, Alert} from "react-bootstrap";
 import DownIcon from '../assets/down.png';
 import createReactClass from 'create-react-class';
+import SortPointer from "./SortPointer";
 
 const AccountTable = createReactClass({
   getInitialState: function() {
     return {
-      accounts: [
-        {
-          id: 1,
-          memberName: 'Jack',
-          accountType: 'basic_auth_user',
-          posixGroup: 'hweng',
-          readOnly: true,
-          requestedBy: 'xuanw',
-          requestedOn: '2012-12-18',
-          odinMaterialSet: 'Ok'
-        },
-        {
-          id: 2,
-          memberName: 'Bob',
-          accountType: 'basic_auth_user',
-          posixGroup: 'hweng',
-          readOnly: false,
-          requestedBy: 'xuanw',
-          requestedOn: '2012-12-18',
-          odinMaterialSet: 'Ok'
-        },
-      ]
     };
   },
 
+  handleSort(key, sort) {
+    this.props.handleSort(key, sort);
+  },
+
+
   render: function() {
+
+    if (this.props.accounts.length === 0) {
+      return (
+        <Alert bsStyle="warning">
+          No Accounts Data
+        </Alert>
+      )
+    }
+
     return (
       <div>
         <Table responsive>
           <thead>
           <tr>
             <th>
-              <input type={'checkbox'}/>
+              <input
+                onChange={e => {
+                  if (e.target.checked) {
+                    this.props.handleSelectAccounts(this.props.accounts.map(account => account.id))
+                  } else {
+                    this.props.handleCancelSelectAccounts(this.props.accounts.map(account => account.id))
+                  }
+                }}
+                checked={this.props.selectedAccounts.length === this.props.accounts.length}
+                type={'checkbox'}/>
             </th>
             <th>
               Member Name
-              <img src={DownIcon} width={15}
-                   style={{
-                     marginLeft: '10px',
-                     cursor: 'pointer'
-                   }}
+              <SortPointer
+                handleSort={(sort) => {
+                  this.handleSort('memberName', sort)
+                }}
+              />
+            </th>
+            <th>
+              Region
+              <SortPointer
+                handleSort={(sort) => {
+                  this.handleSort('region', sort)
+                }}
               />
             </th>
             <th>
               Account Type
-              <img src={DownIcon} width={15}
-                   style={{
-                     marginLeft: '10px',
-                     cursor: 'pointer'
-                   }}
+              <SortPointer
+                handleSort={(sort) => {
+                  this.handleSort('accountType', sort)
+                }}
               />
             </th>
             <th>
               POSIX Group
-              <img src={DownIcon} width={15}
-                   style={{
-                     marginLeft: '10px',
-                     cursor: 'pointer'
-                   }}
+              <SortPointer
+                handleSort={(sort) => {
+                  this.handleSort('posixGroup', sort)
+                }}
               />
             </th>
             <th>
               Read-only
-              <img src={DownIcon} width={15}
-                   style={{
-                     marginLeft: '10px',
-                     cursor: 'pointer'
-                   }}
-              />
+
             </th>
             <th>
               Requested By
-              <img src={DownIcon} width={15}
-                   style={{
-                     marginLeft: '10px',
-                     cursor: 'pointer'
-                   }}
+              <SortPointer
+                handleSort={(sort) => {
+                  this.handleSort('requestedBy', sort)
+                }}
               />
             </th>
             <th>
               Requested On
-              <img src={DownIcon} width={15}
-                   style={{
-                     marginLeft: '10px',
-                     cursor: 'pointer'
-                   }}
+              <SortPointer
+                handleSort={(sort) => {
+                  this.handleSort('requestedOn', sort)
+                }}
               />
             </th>
             <th>
               Odin Material Set
-              <img src={DownIcon} width={15}
-                   style={{
-                     marginLeft: '10px',
-                     cursor: 'pointer'
-                   }}
-              />
             </th>
           </tr>
           </thead>
           <tbody>
-          {this.state.accounts.map(account => {
+          {this.props.accounts.map(account => {
             return (
               <tr key={account.id}>
                 <td>
-                  <input type={'checkbox'}/>
+                  <input
+                    onChange={e => {
+                      if (e.target.checked) {
+                        this.props.handleSelectAccounts([account.id])
+                      } else {
+                        this.props.handleCancelSelectAccounts([account.id])
+                      }
+                    }}
+                    checked={this.props.selectedAccounts.includes(account.id)}
+                    type={'checkbox'}/>
                 </td>
                 <td>
                   {account.memberName}
+                </td>
+                <td>
+                  {account.region}
                 </td>
                 <td>
                   {account.accountType}

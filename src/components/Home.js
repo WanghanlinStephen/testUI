@@ -15,7 +15,7 @@ const Home = createReactClass({
     return (
       <Row>
         <Col xs={2}>
-          <div style={{borderRight: '1px solid grey'}}>
+          <div style={{borderRight: '1px solid #d9d9d9', height: '100vh'}}>
             <NavBar />
           </div>
         </Col>
